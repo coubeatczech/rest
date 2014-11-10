@@ -16,7 +16,7 @@ import Rest.Api (Api, Some1 (..), withVersion)
 import Rest.Gen.Config
 import Rest.Gen.Docs (DocsContext (DocsContext), writeDocs)
 import Rest.Gen.Haskell (HaskellContext (HaskellContext), mkHsApi)
-import Rest.Gen.JavaScript (mkJsApi)
+import Rest.Gen.JavaScript (mkJsApi, MkJsTargetEnvironment(..))
 import Rest.Gen.Ruby (mkRbApi)
 import Rest.Gen.Types
 import Rest.Gen.Utils
@@ -31,7 +31,8 @@ generate config name api sources imports rewrites =
             let context = DocsContext root ver (fromMaybe "./templates" (getSourceLocation config))
             writeDocs context r loc
             exitSuccess
-       Just MakeJS          -> mkJsApi (overModuleName (++ "Api") moduleName) (get apiPrivate config) ver r >>= toTarget config
+       Just MakeJS          -> mkJsApi Both (overModuleName (++ "Api") moduleName) (get apiPrivate config) ver r >>= toTarget config
+       Just MakeBrowserJS   -> mkJsApi Browser (overModuleName (++ "Api") moduleName) (get apiPrivate config) ver r >>= toTarget config
        Just MakeRb          -> mkRbApi (overModuleName (++ "Api") moduleName) (get apiPrivate config) ver r >>= toTarget config
        Just MakeHS          ->
          do loc <- getTargetDir config "./client"

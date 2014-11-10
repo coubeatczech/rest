@@ -1,5 +1,5 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-module Rest.Gen.JavaScript (mkJsApi) where
+module Rest.Gen.JavaScript (mkJsApi, MkJsTargetEnvironment(..)) where
 
 import Prelude hiding ((.))
 
@@ -18,15 +18,26 @@ import Rest.Gen.Base
 import Rest.Gen.Types
 import Rest.Gen.Utils
 
-mkJsApi :: H.ModuleName -> Bool -> Version -> Router m s -> IO String
-mkJsApi ns priv ver r =
-  do prelude <- liftM (render . setManyAttrib attrs . newSTMP) (readContent "Javascript/base.js")
+data MkJsTargetEnvironment = Browser | NodeJs | Both
+
+mkJsApi :: MkJsTargetEnvironment -> H.ModuleName -> Bool -> Version -> Router m s -> IO String
+mkJsApi env ns priv ver r =
+  do prelude <- liftM (render . setManyAttrib attrs . newSTMP) preludeContent
      let cod = showCode $ mkStack
                 [ unModuleName ns ++ ".prototype.version" .=. string (show ver)
                 , mkJsCode (unModuleName ns) priv r
                 ]
      return $ mkJsModule (prelude ++ cod)
-  where attrs = [("apinamespace", unModuleName ns), ("dollar", "$")]
+  where
+    attrs = [("apinamespace", unModuleName ns), ("dollar", "$")]
+    preludeContent = case env of
+      Browser -> let
+        pre = readContent "Javascript/shared-pre.js"
+        browser = readContent "Javascript/browser.js"
+        post = readContent "Javascript/shared-post.js"
+        joined = liftM3 (\p b po -> p ++ b ++ po) pre browser post
+        in joined
+      _ -> readContent "Javascript/base.js"
 
 mkJsModule :: String -> String
 mkJsModule content = "(function (window) {\n\n" ++ content ++ "\n\n})(this);"
