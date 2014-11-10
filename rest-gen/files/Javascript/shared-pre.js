@@ -13,7 +13,7 @@ var ApiFactory = function(withRequest, cookieJar)
 
     var finalModifyRequest = function(req)
     {
-      withRequest(req);
+      withRequest(req, self);
       return modifyRequest(req);
     }
 

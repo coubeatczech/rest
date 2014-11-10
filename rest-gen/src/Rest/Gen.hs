@@ -33,6 +33,7 @@ generate config name api sources imports rewrites =
             exitSuccess
        Just MakeJS          -> mkJsApi Both (overModuleName (++ "Api") moduleName) (get apiPrivate config) ver r >>= toTarget config
        Just MakeBrowserJS   -> mkJsApi Browser (overModuleName (++ "Api") moduleName) (get apiPrivate config) ver r >>= toTarget config
+       Just MakeNodeJS      -> mkJsApi NodeJs (overModuleName (++ "Api") moduleName) (get apiPrivate config) ver r >>= toTarget config
        Just MakeRb          -> mkRbApi (overModuleName (++ "Api") moduleName) (get apiPrivate config) ver r >>= toTarget config
        Just MakeHS          ->
          do loc <- getTargetDir config "./client"

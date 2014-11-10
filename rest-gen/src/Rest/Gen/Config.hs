@@ -27,7 +27,7 @@ import Data.Label
 import System.Console.GetOpt
 import System.Environment (getArgs)
 
-data Action   = MakeDocs String | MakeJS | MakeRb | MakeHS | MakeBrowserJS
+data Action   = MakeDocs String | MakeJS | MakeRb | MakeHS | MakeBrowserJS | MakeNodeJS
 data Location = Default | Stream | Location String
 
 data Config = Config
@@ -57,7 +57,8 @@ options :: (a :-> Config) -> [OptDescr (a -> a)]
 options parent =
   [ Option ['d'] ["documentation"] (ReqArg (set (action     . parent) . Just . MakeDocs) "URLROOT") "Generate API documentation, available under the provided URL root."
   , Option ['j'] ["javascript"]    (NoArg  (set (action     . parent) (Just MakeJS))) "Generate Javascript bindings."
-  , Option ['b'] ["js-browser"]    (NoArg  (set (action     . parent) (Just MakeBrowserJS))) "Generate Browser Javascript bindings."
+  , Option ['b'] ["js-browser"]    (NoArg  (set (action     . parent) (Just MakeBrowserJS))) "Generate browser Javascript bindings."
+  , Option ['n'] ["js-node"]       (NoArg  (set (action     . parent) (Just MakeNodeJS))) "Generate Node.js Javascript bindings."
   , Option ['r'] ["ruby"]          (NoArg  (set (action     . parent) (Just MakeRb))) "Generate Ruby bindings."
   , Option ['h'] ["haskell"]       (NoArg  (set (action     . parent) (Just MakeHS))) "Generate Haskell bindings."
   , Option ['s'] ["source"]        (ReqArg (set (source     . parent) . parseLocation) "LOCATION") "The location of additional sources."

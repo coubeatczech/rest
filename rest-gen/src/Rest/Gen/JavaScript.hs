@@ -30,13 +30,12 @@ mkJsApi env ns priv ver r =
      return $ mkJsModule (prelude ++ cod)
   where
     attrs = [("apinamespace", unModuleName ns), ("dollar", "$")]
+    pre = readContent "Javascript/shared-pre.js"
+    post = readContent "Javascript/shared-post.js"
+    join middle = liftM3 (\p m po -> p ++ m ++ po) pre middle post
     preludeContent = case env of
-      Browser -> let
-        pre = readContent "Javascript/shared-pre.js"
-        browser = readContent "Javascript/browser.js"
-        post = readContent "Javascript/shared-post.js"
-        joined = liftM3 (\p b po -> p ++ b ++ po) pre browser post
-        in joined
+      Browser -> join $ readContent "Javascript/browser.js"
+      NodeJs -> join $ readContent "Javascript/nodejs.js"
       _ -> readContent "Javascript/base.js"
 
 mkJsModule :: String -> String
