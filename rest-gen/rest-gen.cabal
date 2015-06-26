@@ -31,6 +31,7 @@ library
     Rest.Gen
     Rest.Gen.Base
     Rest.Gen.Base.ActionInfo
+    Rest.Gen.Base.ActionInfo.Ident
     Rest.Gen.Base.ApiTree
     Rest.Gen.Config
     Rest.Gen.Docs
@@ -38,14 +39,13 @@ library
     Rest.Gen.JavaScript
     Rest.Gen.Ruby
     Rest.Gen.Types
+    Rest.Gen.Utils
   other-modules:
     Paths_rest_gen
-    Rest.Gen.Base.ActionInfo.Ident
     Rest.Gen.Base.JSON
     Rest.Gen.Base.JSON.Pretty
     Rest.Gen.Base.Link
     Rest.Gen.Base.XML
-    Rest.Gen.Utils
   build-depends:
       base >= 4.5 && < 4.9
     , Cabal >= 1.16 && < 1.23
